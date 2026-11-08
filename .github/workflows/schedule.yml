@@ -3,7 +3,7 @@ name: Daily Meta Ads to Looker Sync
 on:
   schedule:
     # 11:30 PM IST (UTC+5:30) corresponds to 18:00 UTC (18:00 + 5:30 = 23:30 IST)
-    - cron: '0 18 * * *'
+    - cron: '0 6,18 * * *'
   workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
 
 concurrency:
@@ -37,7 +37,3 @@ jobs:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
           META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
           GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
-          SPREADSHEET_NAME: ${{ secrets.SPREADSHEET_NAME }}
-          WORKSHEET_NAME: ${{ secrets.WORKSHEET_NAME }}
-        run: python main.py
