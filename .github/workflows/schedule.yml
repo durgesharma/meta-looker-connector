@@ -1,0 +1,43 @@
+name: Daily Meta Ads to Looker Sync
+
+on:
+  schedule:
+    # 11:30 PM IST (UTC+5:30) corresponds to 18:00 UTC (18:00 + 5:30 = 23:30 IST)
+    - cron: '0 18 * * *'
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
+
+concurrency:
+  group: meta-looker-sync
+  cancel-in-progress: false
+
+jobs:
+  sync-meta-to-sheets:
+    name: Sync Meta Ads to Google Sheets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Meta to Sheets connector
+        env:
+          META_APP_ID: ${{ secrets.META_APP_ID }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SPREADSHEET_NAME: ${{ secrets.SPREADSHEET_NAME }}
+          WORKSHEET_NAME: ${{ secrets.WORKSHEET_NAME }}
+        run: python main.py
